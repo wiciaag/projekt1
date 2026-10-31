@@ -9,7 +9,7 @@ int infected = 10;
 int recovered = 10;
 int day = 0;
 void showPopulation(int day, int susceptible, int infected, int recovered);
-void SimulateNextDay(int day, int susceptible, int infected, int recovered);
+void SimulateNextDay(int day,int susceptible, int infected, int recovered);
 void ChangeModelParameters(double recoveryRate,double infectedRate);
 bool checkPopulation(int susceptible, int infected, int recovered);
 int main()
@@ -49,7 +49,7 @@ void showPopulation(int day, int susceptible, int infected, int recovered) {
 	cout << "Recovered: " << recovered << "\n";
 	cout << "Total: " << susceptible + infected + recovered << "\n";
 }
-void SimulateNextDay(int day, int susceptible, int infected, int recovered){
+void SimulateNextDay(int day,int susceptible,int infected,int recovered){
 	day++;
 	int yesterdayinfected=infected;
 	if (yesterdayinfected * infectionRate >= susceptible && yesterdayinfected * recoveryRate >= infected) {
