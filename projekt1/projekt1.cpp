@@ -1,20 +1,78 @@
-// projekt1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+
 
 #include <iostream>
-
+using namespace std;
+double infectionRate = 0.20;
+double recoveryRate = 0.10;
+int susceptible = 80;
+int infected = 10;
+int recovered = 10;
+int day = 0;
+void showPopulation(int day, int susceptible, int infected, int recovered);
+void SimulateNextDay(int day, int susceptible, int infected, int recovered);
+void ChangeModelParameters(double recoveryRate,double infectedRate);
+bool checkPopulation(int susceptible, int infected, int recovered);
 int main()
 {
-    std::cout << "Hello World!\n";
+	while (7) {
+		showPopulation(day, susceptible, infected, recovered);
+		int choice;
+		cout << "== Epidemic Simulator ==\n1. Simulate next day\n2. Change model parameters\n3. Exit\nYour choice: ";
+		cin >> choice;
+		switch (choice) {
+		case 1:
+			SimulateNextDay(day, susceptible, infected, recovered);
+			if (checkPopulation(susceptible,infected,recovered) == false) {
+				cout << "\nYour population has no right to exist, sorry:( ";
+				break;
+			}
+			break;
+		case 2:
+			ChangeModelParameters(recoveryRate,infectionRate);
+			break;
+		case 3:
+			break;
+		default:
+			cout << "Your number is not correct. Try again:/\n";
+			continue;
+
+		}
+		
+	}
+
+	
 }
+void showPopulation(int day, int susceptible, int infected, int recovered) {
+	cout << "Day: " << day<<"\n";
+	cout << "Susceptible: " << susceptible << "\n";
+	cout << "Infected: " << infected << "\n";
+	cout << "Recovered: " << recovered << "\n";
+	cout << "Total: " << susceptible + infected + recovered << "\n";
+}
+void SimulateNextDay(int day, int susceptible, int infected, int recovered){
+	day++;
+	int yesterdayinfected=infected;
+	if (yesterdayinfected * infectionRate >= susceptible && yesterdayinfected * recoveryRate >= infected) {
+		susceptible = susceptible - (yesterdayinfected * infectionRate);
+		recovered = recovered + (yesterdayinfected * recoveryRate);
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+		infected = (infected * infectionRate) + infected;
+		infected = infected - (yesterdayinfected * recoveryRate);
+	}
+}
+void ChangeModelParameters(double recoveryRate,double infectionRate) {
+	cout << "New value of infection rate: ";
+	cin >> infectionRate;
+	cout << "\n";
+	cout << "New value of recovery rate: ";
+	cin >> recoveryRate;
+	cout << "\n";
+}
+bool checkPopulation(int susceptible, int infected, int recovered) {
+	if (susceptible >= 0 && infected >= 0 && recovered >= 0 && susceptible + infected + recovered == 100) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
