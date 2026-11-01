@@ -57,14 +57,12 @@ void SimulateNextDay(){
 	int yesterdayinfected=infected;
 	int newinfections = floor(yesterdayinfected * infectionRate);
 	int newrecoveries = floor(yesterdayinfected * recoveryRate);
-	if (yesterdayinfected * infectionRate <= susceptible && yesterdayinfected * recoveryRate <= infected) {
-		susceptible = susceptible - newinfections;
-		recovered = recovered + newrecoveries;
+	susceptible = susceptible - newinfections;
+	recovered = recovered + newrecoveries;
 
-		infected = newinfections + yesterdayinfected;
-		infected = infected - newrecoveries;
+	infected = newinfections + yesterdayinfected;
+	infected = infected - newrecoveries;
 	}
-}
 void ChangeModelParameters() {
 	cout << "New value of infection rate(0-1): ";
 	cin >> infectionRate;
