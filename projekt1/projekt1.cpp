@@ -13,21 +13,38 @@ void showPopulation();
 void SimulateNextDay();
 void ChangeModelParameters();
 bool checkPopulation();
+void ShowSimulationHistory();
+int maxdays = 5;
+int* limit = new int[maxdays];//limit dni epidemii-101 dni od 0 do dnia 100, ale zapisalam w postaci zmiennej zeby latwiej bylo to potem sprawdzic
+int status[101][3] = {};//wiersze to kolejne dni, a kolumny to: 0-podatni,1-zainfekowani,2-wykurowani
+int* dailynewinfections=new int[maxdays-1];
+int* dailynewrecoveries=new int[maxdays-1];
 int main()
 {
+	status[0][0] = 80;
+	status[0][1] = 10;
+	status[0][2] = 10;
 	while (7) {
 		showPopulation();
 		int choice;
-		cout << "== Epidemic Simulator ==\n1. Simulate next day\n2. Change model parameters\n3. Exit\nYour choice: ";
+		cout << "== Epidemic Simulator ==\n1. Simulate next day\n2. Change model parameters\n3. Exit\n4. Show simulation history\nYour choice: ";
 		cin >> choice;
 		switch (choice) {
 		case 1:
-			SimulateNextDay();
-			break;
+			if (day + 1 <= maxdays) {
+				SimulateNextDay();
+				break;
+			}
+			else {
+				break;
+			}
 		case 2:
 			ChangeModelParameters();
 			break;
 		case 3:
+			break;
+		case 4:
+			ShowSimulationHistory();
 			break;
 		default:
 			cout << "Your number is not correct. Try again:/\n";
@@ -39,6 +56,10 @@ int main()
 			break;
 		}
 		if (choice == 3) {
+			break;
+		}
+		if (day + 1 > maxdays) {
+			cout << "Your epidemic is too long!";
 			break;
 		}
 	}
@@ -53,15 +74,23 @@ void showPopulation() {
 	cout << "Total: " << susceptible + infected + recovered << "\n";
 }
 void SimulateNextDay(){
-	day++;
-	int yesterdayinfected=infected;
-	int newinfections = floor(yesterdayinfected * infectionRate);
-	int newrecoveries = floor(yesterdayinfected * recoveryRate);
-	susceptible = susceptible - newinfections;
-	recovered = recovered + newrecoveries;
+	day++;	
+		limit[day] = day;
+		int yesterdayinfected = infected;
+		int newinfections = floor(yesterdayinfected * infectionRate);
+		int newrecoveries = floor(yesterdayinfected * recoveryRate);
+		susceptible = susceptible - newinfections;
+		recovered = recovered + newrecoveries;
 
-	infected = newinfections + yesterdayinfected;
-	infected = infected - newrecoveries;
+		infected = newinfections + yesterdayinfected;
+		infected = infected - newrecoveries;
+		dailynewinfections[day - 1] = newinfections;
+		dailynewrecoveries[day - 1] = newrecoveries;
+	status[day][0] = susceptible;
+	status[day][1] = infected;
+	status[day][2] = recovered;
+	
+
 	}
 void ChangeModelParameters() {
 	cout << "New value of infection rate(0-1): ";
@@ -97,4 +126,15 @@ bool checkPopulation() {
 		return false;
 	}
 
+}
+void ShowSimulationHistory() {
+	cout << "Day:     Susceptible:     Infected:    Recovered:    New infections:    New recoveries: " << endl;
+	for (int i = 0;i <= day;i++) {
+		if (i!=0) {
+			cout << i << "        " << status[i][0] << "               " << status[i][1] << "           " << status[i][2] << "             " << dailynewinfections[i-1] << "                  " << dailynewrecoveries[i-1] << endl;
+		}
+		else {
+			cout<< i << "        " << status[i][0] << "               " << status[i][1] << "           " << status[i][2] << "             -                  - " << endl;
+		}
+	}
 }
